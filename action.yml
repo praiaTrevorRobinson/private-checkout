@@ -80,15 +80,14 @@ runs:
           exit 1
         }
         expected_checkout_path="$GITHUB_ACTION_PATH/../../../$repository/$ref"
-        if ! [[ -d "$expected_checkout_path" ]]; then
-          echo "Failed! Outputting debug info:"
-          echo "LS of expected repo dir ($GITHUB_ACTION_PATH/../../..):"
-          ls -all "$GITHUB_ACTION_PATH/../../.."
-          echo "LS of everything in there"
-          ls -all $GITHUB_ACTION_PATH/../../../*
+        echo "LS of expected repo dir ($GITHUB_ACTION_PATH/../../..):"
+        ls -all "$GITHUB_ACTION_PATH/../../.." || true
+        echo "LS of everything in there"
+        ls -all $GITHUB_ACTION_PATH/../../../* || true
+        echo "LS of expected_checkout_path:"
+        ls -all "$expected_checkout_path" || true
 
-          die "Failed to check out $repository@$ref. Confirm that the repository is accessible and that the ref is valid."
-        fi
+        [[ -d "$expected_checkout_path" ]] || die "Failed to check out $repository@$ref. Confirm that the repository is accessible and that the ref is valid."
 
         # if the step failed, but the files are there, it just means actions/runner puked on the lack of action.yml or Dockerfile.
         # so emit a helpful hint
